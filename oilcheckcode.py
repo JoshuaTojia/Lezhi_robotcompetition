@@ -6,17 +6,17 @@ import math
 import ctypes
 import lzai
 
-
+#捕捉图片
 def snapshot(cam, x):
     img = cam.getImage().rotate(180)
     img.save("image"+str(x)+".png")
     return img
 
-
+#识别管子线条用于判断转弯等行为操作
 def line(img, number):
     bin = img.binarize()
     # bin.save("bin" + str(number) + ".png")
-    lines = bin.findLines(threshold=25, minlinelength=65, maxlinegap=25)
+    lines = bin.findLines(threshold=25, minlinelength=65, maxlinegap=25)  #二值化并且设定参数阈值，线条间距等
     pos = []
     neg = []
     width = []
@@ -30,8 +30,10 @@ def line(img, number):
     if len(lines.angle()) > 20:
         lines = bin.findLines()
     lines.draw(width=3, color=Color.RED)
-
+    
+    #筛选符合要求的线条角度值
     angles = [i for i in range(len(lines.angle())) if ((lines.angle()[i] != 90.0) & ((lines.angle()[i] != -90.0) | (lines.coordinates()[i][0] < 638)))]
+    #符合要求的所有线条进行循环
     for i in range(len(lines.angle())):
         if i in angles:
             width = width + [lines.width()[i]]
