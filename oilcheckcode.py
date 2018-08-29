@@ -61,7 +61,7 @@ def line(img, number):
     x_right = np.mean([j for j in xc if j >= np.mean(xc)])
     y_up = np.mean([j for j in yc if j <= np.mean(yc)])
     y_down = np.mean([j for j in yc if j >= np.mean(yc)])
-    #np.mean即numpy.mean是求平均值
+    #np.mean()即numpy.mean()是求平均值
     width_mean = np.mean(width)
     height_mean = np.mean(height)
     if (width_mean >= 10 * height_mean) & (638.0 not in lines.length()) & (-90.0 in lines.angle()) & (x_right >= 400):
