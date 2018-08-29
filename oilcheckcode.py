@@ -1,4 +1,6 @@
+#coding=utf-8
 #!/usr/bin/python3
+#像素为640X480
 from SimpleCV import Camera, Image, Color
 import time
 import numpy as np
@@ -36,6 +38,7 @@ def line(img, number):
     #符合要求的所有线条进行循环
     for i in range(len(lines.angle())):
         if i in angles:
+            #所有线条的宽、高、x、y的总和
             width = width + [lines.width()[i]]
             height = height + [lines.height()[i]]
             xc = xc + [lines.coordinates()[i][0]]
@@ -45,16 +48,20 @@ def line(img, number):
             elif lines.angle()[i] < -35:
                 neg = neg + [lines.angle()[i]]
             elif lines.angle()[i] != 0.0:
+                #直线角度在-35与35度之间且y坐标在整张图的120与470像素之间（图片总长是480像素）
                 if (lines.coordinates()[i][1] >= 120) & (lines.coordinates()[i][1] <= 470):
                     horizon = horizon + 1
+                    #连续三次判断是转弯那么进行转弯，防止1次失误判断而进行转弯
                     if horizon >= 3:
                         turn = 1
         else:
             pass
+    #求出管子两边以及上下各自的直线坐标
     x_left = np.mean([j for j in xc if j <= np.mean(xc)])
     x_right = np.mean([j for j in xc if j >= np.mean(xc)])
     y_up = np.mean([j for j in yc if j <= np.mean(yc)])
     y_down = np.mean([j for j in yc if j >= np.mean(yc)])
+    #np.mean即numpy.mean是求平均值
     width_mean = np.mean(width)
     height_mean = np.mean(height)
     if (width_mean >= 10 * height_mean) & (638.0 not in lines.length()) & (-90.0 in lines.angle()) & (x_right >= 400):
