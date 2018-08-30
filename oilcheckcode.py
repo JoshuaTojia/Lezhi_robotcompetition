@@ -64,12 +64,16 @@ def line(img, number):
     #np.mean()即numpy.mean()是求平均值
     width_mean = np.mean(width)
     height_mean = np.mean(height)
+    #由于当右上角有转弯管子的时候所有线的宽是远大于高的，故而有如下条件判断转弯
     if (width_mean >= 10 * height_mean) & (638.0 not in lines.length()) & (-90.0 in lines.angle()) & (x_right >= 400):
         turn = 1
+    #随着机器鱼的前进以及视野，当最低Y坐标大于300转弯
     if (y_up >= 300) & (len(lines.length()) >= 5):
         turn = 1
     if (x_left >= 350) & (y_up >= 245):
         turn = 1
+    #simplecv里面角度正负判定：当角指向左为负，当角指向右为正
+    #故而当没有>35度的角，有<-35度，那么管子应该是斜向左上方，鱼要右转
     if (pos == []) & (neg != []):
         angle = np.mean(neg)
         if (abs(angle) >= 75) & (abs(angle) <= 82) & (abs(x_right - x_left) >= 100) & (x_right >= 440):
@@ -80,6 +84,7 @@ def line(img, number):
             tl = 1
     elif (pos == []) & (neg == []):
         angle = []
+    #此句由于我们鱼摄像头摆放位置的原因会使得直线发生弯曲，这下面是bug修复添加语句
     else:
         angle = np.mean(pos) + np.mean(neg)
         if (angle > 10) & (x_right >= 440) & (angle < 30):
@@ -97,9 +102,10 @@ def line(img, number):
         #     img.save("newImage" + str(number) + ".png")
         # except:
         #     pass
+    #下面的coordinates[number][x]中的x数值，由如下返回值决定
     return x_left, x_right, y_up, y_down, width_mean, height_mean, angle, turn, tl, tr
 
-
+#根据Line()函数对于直线的判断，下面是相应的控制鱼的运动指令
 def check_line(coordinates, number):
     if coordinates[number][7] & (coordinates[number][2] >= 50) & (coordinates[number][1] >= 400):
         time.sleep(0.2)
@@ -210,6 +216,7 @@ def check_line(coordinates, number):
         print("Go Ahead!")
 
 
+#黑点寻找模块
 def black_blob(img, coordinates, number):
     next_light = 0
     blob1 = img.colorDistance(Color.BLACK).dilate(10).binarize(100)
