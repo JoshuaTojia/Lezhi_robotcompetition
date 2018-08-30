@@ -219,11 +219,13 @@ def check_line(coordinates, number):
 #黑点寻找模块
 def black_blob(img, coordinates, number):
     next_light = 0
+    #SimpleCv里面的斑点寻找命令
     blob1 = img.colorDistance(Color.BLACK).dilate(10).binarize(100)
     blobs = blob1.findBlobs()
     if blobs != None:
         if len(blobs.width()) <= 4:
             for xx in range(len(blobs.width())):
+                #黑点在管子左右两线的中间判断
                 if (blobs.coordinates()[xx][0] > coordinates[number][0]) & (blobs.coordinates()[xx][0] < coordinates[number][1]):
                     if blobs.coordinates()[xx][1] >= 240:
                         # print(coordinates[number][0], blobs.coordinates()[0][0], coordinates[number][1])
@@ -270,7 +272,7 @@ def black_blob(img, coordinates, number):
         print("No Blobs!")
     return next_light
 
-
+#圆形检测，黑点检测的补充。由于摄像头位置，圆点黑点并不是圆形，此函数只是补充
 def circle(img):
     circles = img.findCircle()
     if circles != None:
@@ -278,11 +280,12 @@ def circle(img):
     else:
         return 0
 
-
+#主函数
 if __name__ == "__main__":
     next_light1 = 0
     kong = 0
     cam1 = Camera()
+    #调用C语言库
     ll = ctypes.cdll.LoadLibrary
     Lmst = ll("./libpycall.so")
 
