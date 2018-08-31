@@ -8,4 +8,4 @@ bug筛查以及配合辅助：涂雨佳(Joshua)。
 
 基于simplecv的图像识别，在树莓派上进行调试。树莓派包含摄像头，500M像素即可。
 
-master文件下的oilcheckcode.py即是主要代码。
+master文件下的oilcheckcode.py即是主要代码，并且附有注释。
